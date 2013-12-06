@@ -1,0 +1,4 @@
+include 'submodule1'
+
+rootProject.name='breizhgradle'
+

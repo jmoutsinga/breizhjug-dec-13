@@ -1,0 +1,17 @@
+allprojects {
+    apply plugin: 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+    compile project(':submodule1')
+}
+
+task chuck(type:ChuckNorrisTask) {
+    firstName = 'Nicolas'
+    lastName = 'DeLoof'
+}

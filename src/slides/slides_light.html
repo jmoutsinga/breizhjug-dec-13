@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=1024, user-scalable=no">
+
+	<title>Build battle: Gradle</title>
+	
+	<!-- Required stylesheet -->
+	<link rel="stylesheet" href="core/deck.core.css">
+	
+	<!-- Extension CSS files go here. Remove or add as needed. -->
+	<link rel="stylesheet" href="extensions/goto/deck.goto.css">
+	<link rel="stylesheet" href="extensions/menu/deck.menu.css">
+	<link rel="stylesheet" href="extensions/navigation/deck.navigation.css">
+	<link rel="stylesheet" href="extensions/status/deck.status.css">
+	<link rel="stylesheet" href="extensions/hash/deck.hash.css">
+	<link rel="stylesheet" href="extensions/scale/deck.scale.css">
+
+	<!-- Style theme. More available in /themes/style/ or create your own. -->
+	<link rel="stylesheet" href="themes/style/bzh.css">
+	<link rel="stylesheet" href="css/extra.css">
+
+	<!-- Transition theme. More available in /themes/transition/ or create your own. -->
+	<link rel="stylesheet" href="themes/transition/horizontal-slide.css">
+
+    <!-- CodeMirror stylesheet -->
+    <link rel="stylesheet" href="extensions/codemirror/deck.codemirror.css">
+
+    <link rel="stylesheet" href="extensions/codemirror/themes/neat.css">
+
+	<!-- Required Modernizr file -->
+	<script src="modernizr.custom.js"></script>
+</head>
+<body class="deck-container">
+
+<!-- Begin slides. Just make elements with a class of slide. -->
+
+<section class="slide">
+        <div class="vcenter gr8">
+        <h1>Build battle: Gradle</h1>
+        <h2>Breizhjug</h2>
+        <h3>Cédric Champeau, SpringSource</h3>
+        <h4>5 décembre 2013</h4>
+        </div>
+</section>
+
+<section class="slide">
+	<h2>Qui suis-je ?</h2>
+    <h3>Passé : contributeur Groovy</h3>
+                <ul>
+                    <li>Bugfixes
+                    <li>Modules: @Bytecode AST xform, GFreeMarker</li>
+                    <li>Core: compilation customizers, @xInterrupt, ...</li>
+                    <li>Utilisation de Groovy comme DSL pour le TALN</li>
+                </ul>
+    <h3>Aujourd'hui: Core Groovy committer</h3>
+            <ul>
+                <li>Compilation configuration</li>
+                <li>Static type checking</li>
+                <li>Static compilation</li>
+		<li>Bugfixing...</li>
+            </ul>
+    <h3>Social</h3>
+        <ul>
+            <li>Twitter: <a href="http://twitter.com/CedricChampeau" target="_blank">@CedricChampeau</a></li>
+            <li>Google+: <a href="http://gplus.to/cchampeau" target="_blank">http://gplus.to/cchampeau</a></li>
+            <li>Blog: <a href="http://melix.github.io/blog" target="_blank">http://melix.github.io/blog</a></li>
+        </ul>
+</section>
+
+<section class="slide">
+    <h2>Qu'est-ce que Gradle ?</h2>
+    <ul>
+        <li>Un outil de build pour la JVM</li>
+        <li>Declaratif</li>
+        <li>Convention over configuration</li>
+        <li>Dependency management</li>
+        <li>Scriptable</li>
+        <li>Concis</li>
+    </ul>
+
+</section>
+<section class="slide">
+    <h2>Qu'est-ce que Gradle ?</h2>
+    <div class="left">
+    <img src="images/apache-ant.png">
+    <img src="images/ivy-lierre.png">
+    <img src="images/maven.gif">
+    <img src="images/groovy-logo-medium.png">
+    </div>
+    <div class="right"><div style="height: 200px"></div><img src="images/gradle_1000.png" style="vertical-align: middle"></div>
+
+</section>
+
+<section class="slide">
+    <h2>Qu'est-ce que Gradle ?</h2>
+    <ul>
+        <li>Système de gestion de dépendances maison (avant: Ivy)</li>
+        <li>API riche et ouverte</li>
+        <li>Permettre de gérer ses propres conventions</li>
+        <li>L'outil de build ne doit pas s'imposer !</li>
+    </ul>
+    <blockquote cite="http://www.gradle.org/docs/current/userguide/tutorial_using_tasks.html">
+        <p>Make the impossible possible, make the possible easy and make the easy elegant</p>
+        <p><cite>(inspired by Moshe Feldenkrais)</cite></p>
+    </blockquote>
+</section>
+
+<section class="slide">
+    <h2>Les défis</h2>
+    <ul>
+        <li>Builds modulaires</li>
+        <li>Enterprise class builds</li>
+        <li>Continous delivery</li>
+        <li>Multi-projet</li>
+        <li>Parallélisme</li>
+    </ul>
+</section>
+
+
+<section class="slide">
+    <h2>Compiler une librairie Java</h2>
+    <textarea id="gradle1" name="gradle1" class="code" style="display:none">apply plugin:'java' // projet Java
+
+repositories {
+    mavenCentral() // si dépendances vers des libs central
+}
+
+dependencies {
+    testCompile "junit:junit:4.11" // on utilise JUnit pour les tests
+}
+    </textarea>
+</section>
+
+<section class="slide">
+    <h2>Compiler un projet Android</h2>
+    <textarea id="gradle_android1" name="gradle_android1" class="code" style="display:none">buildscript {
+    repositories { mavenCentral() }
+    dependencies { classpath ‘com.android.tools.build:gradle:0.4’ }
+}
+
+apply plugin: ‘android’
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion ‘16.1’
+}
+    </textarea>
+</section>
+
+<section class="slide">
+    <h2>Compiler un projet Scala</h2>
+    <textarea id="gradle_scala" name="gradle_scala" class="code" style="display:none">apply plugin: 'scala'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.9.1'
+}
+
+dependencies {
+  compile 'commons-collections:commons-collections:3.2'
+  testCompile 'junit:junit:4.11'
+}
+    </textarea>
+</section>
+
+<section class="slide">
+    <h2>Définition d'un scope personalisé</h2>
+    <textarea id="custom_scope" name="custom_scope" class="code" style="display:none">apply plugin: 'java'
+
+configurations {
+    integTest.extendsFrom testRuntime
+}
+
+dependencies {
+    compile 'commons-collections:commons-collections:3.2'
+    testCompile 'junit:junit:4.7'
+    integTest 'commons-io:commons-io:1.4'
+}
+
+sourceSets {
+    integTest {
+        java.srcDir file('src/integration-test/java')
+        resources.srcDir file('src/integration-test/resources')
+        compileClasspath = sourceSets.main.classes + sourceSets.test.classes + configurations.integTest
+        runtimeClasspath = classes + compileClasspath
+    }
+}
+
+task integrationTest(type: Test, dependsOn: jar) {
+    testClassesDir = sourceSets.integTest.classesDir
+    classpath = sourceSets.integTest.runtimeClasspath
+    systemProperties['jar.path'] = jar.archivePath
+}
+</textarea>
+</section>
+
+<section class="slide">
+    <h2>Gestion des variantes (1/2)</h2>
+    <textarea id="gradle_android2" name="gradle_android2" class="code" style="display:none">android {
+    compileSdkVersion 15
+    flavorGroups   "abi", "version"
+    productFlavors {
+        arm {
+            flavorGroup   "abi"
+        }
+        x86 {
+            flavorGroup   "abi"
+        }
+        free {
+            flavorGroup   "version"
+    		packageName = "com.android.tests.flavored.free"
+			versionName = "2.0.0-free"
+        }
+        paid {
+            flavorGroup   "version"
+	    packageName = "com.android.tests.flavored.paid"
+	    versionName = "1.0.0-paid"
+        }
+   }
+}</textarea>
+</section>
+    <section class="slide">
+    <h2>Gestion des variantes (2/2)</h2>
+        <pre>arm-free-debug.apk
+x86-free-debug.apk
+arm-paid-debug.apk
+x86-paid-debug.apk
+arm-free-release.apk
+x86-free-release.apk
+arm-paid-release.apk
+x86-paid-release.apk</pre>
+        <h3>Un même projet permet de générer de multiples artéfacts !</h3>
+        <p>Dites adieux aux profils inmaintenables et activés à la demande</p>
+    </section>
+
+<section class="slide">
+    <h2>Sélection de tâches</h2>
+    <h3>Un projet Gradle est inspectable</h3>
+    <p>Exemple: trouver toutes les tâches qui génèrent un jar</p>
+    <textarea id="task_selection" name="task_selection" class="code" style="display:none">tasks.withType(Jar).all {
+    doLast {
+        ant.checksum(file: archivePath, toDir: archivePath.parentFile)
+    }
+}
+    </textarea>
+</section>
+
+<section class="slide">
+    <h2>Builds incrémentales</h2>
+    <h3>Point fort de Gradle!</h3>
+    <p>L'API permet de définir ses propres tâches incrémentales</p>
+    <p>Au revoir les <i>clean build</i> systématiques !</p>
+<textarea id="incremental1" name="incremental1" class="code" style="display:none">class SourceFileList extends DefaultTask {
+
+    @Input
+    FileCollection input = project.sourceSets.main.allSource
+
+    @OutputFile
+    File output = new File("${project.buildDir}/sourcefiles.txt")
+
+    @TaskAction
+    void generateSourceFileList() {
+        output.withWriter { writer ->
+            project.sourceSets.main.allSource.each {
+                writer << "$it\n"
+            }
+        }
+    }
+}
+
+task sourceList(type: SourceFileList) {
+    output = file("$buildDir/files.txt")
+}
+</textarea>
+</section>
+
+<section class="slide">
+    <h2>Le Gradle wrapper (1/2)</h2>
+    <h3>Problématique</h3>
+    <p>Laurent lance la build avec Gradle 1.2 alors que les tests ont été faits avec Gradle 1.6</p>
+    <p>Mises à jour de Gradle sur le CI ?</p>
+    <section class="slide">
+        <h3>Réponse: le Gradle wrapper</h3>
+        <p>Au lieu de <pre>gradle build</pre></p>
+        <p>On écrit <pre>./gradlew build</pre></p>
+    </section>
+</section>
+<section class="slide">
+    <h2>Le Gradle wrapper (2/2)</h2>
+    <h3>Qu'est ce que ça fait ?</h3>
+    <ul>
+        <li>Télécharge automatiquement Gradle</li>
+        <li>Fichier de configuration pour la version</li>
+        <li>Utilisable sur un CI!</li>
+    </ul>
+    <h3>On doit toujours utiliser le wrapper !</h3>
+    <p>Bootstraping possible</p>
+    <pre>gradle setupWrapper</pre>
+</section>
+
+<section class="slide">
+    <h2>Gradle et le multi-projet</h2>
+    <h3>Déclaratif</h3>
+    <p>settings.gradle</p>
+    <textarea id="settings_modules" name="settings_modules" class="code" style="display:none">
+        include 'bzh-core', 'bzh-xml', 'bzh-json'
+    </textarea>
+    <pre>
+        build.gradle // fichier principal
+        settings.gradle // déclaration des sous-projets
+        bzh-core
+           |----- build.gradle // fichier de build spécifique au sous-module
+        bzh-xml
+           |----- build.gradle // fichier de build spécifique au sous-module
+        bzh-json
+           |----- build.gradle // fichier de build spécifique au sous-module
+    </pre>
+</section>
+<section class="slide">
+    <h2>Gradle et le multi-projet</h2>
+    <h3>Dépendances entre projets</h3>
+    <textarea id="gradle_module_dep" name="gradle_module_dep" class="code" style="display:none">
+        dependencies {
+            compile project(':bzh-core')
+            compile project(':bzh-json')
+        }
+    </textarea>
+    <h3>Résolution des dépendances</h3>
+    <ul>
+        <li>Possible de compiler depuis un sous-projet</li>
+        <li>Compilation "intelligente" (up-to-date checking)</li>
+    </ul>
+    <section class="slide">
+        <h3>Compiler en parallèle</h3>
+        <pre>gradle --parallel build</pre>
+        <h4>C'est gratuit ! En prévision: distribution de build sur le cloud</h4>
+    </section>
+
+</section>
+
+<section class="slide">
+    <h2>Rapports de build: d'où vient cette dépendance ?</h2>
+    <h3>Problème commun: mais qui me ramène cette p... de dépendance ?</h3>
+    <p>Avec Gradle:</p>
+    <textarea id="dep_insight" name="dep_insight" class="code" style="display:none">gradle dependencyInsight --dependency xmlpull</textarea>
+    <p></p>
+    <section class="slide">
+        <img src="images/dep_insight.png">
+    </section>
+</section>
+
+<section class="slide">
+    <h2>Publier sur un repo Maven</h2>
+    <h3>Plugin "maven"</h3>
+    <textarea id="deploy" name="deploy" class="code" style="display:none">
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/tmp/myRepo/")
+            pom.project {
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+    </textarea>
+    <h3>Possibilités nombreuses</h3>
+    <ul>
+        <li>Personalisation du pom.xml</li>
+        <li>Génération de multiples pom.xml</li>
+        <li>Mapping de dépendances automatique</li>
+        <li>...</li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Dernier exemple pour la route</h2>
+    <h3>Gestion fine des dépendances</h3>
+    <textarea id="gradle_dep_fine" name="gradle_dep_fine" class="code" style="display:none">configurations.all {
+  resolutionStrategy {
+    // au lieu de choisir automatiquement, fail de la build si un conflit de version existe
+    failOnVersionConflict()
+
+    // add a dependency resolve rule
+    eachDependency { DependencyResolveDetails details ->
+      // forcer la version des artéfacts du groupe 'org.breizhcamp'
+      if (details.requested.group == 'org.breizhcamp') {
+          details.useVersion '1.4'
+      }
+      // changer 'groovy-all' en 'groovy':
+      if (details.requested.name == 'groovy-all') {
+         details.useTarget group: details.requested.group, name: 'groovy', version: details.requested.version
+      }
+    }
+
+    // mise en cache des "versions dynamiques" (2.2+, latest, ...)
+    cacheDynamicVersionsFor 10*60, 'seconds'
+
+    // ne pas mettre en cache les "snapshots"
+    cacheChangingModulesFor 0, 'seconds'
+  }
+}
+
+    </textarea>
+</section>
+
+<section class="slide">
+    <h2>Conclusion</h2>
+    <a href="http://www.gradle.org" target="_blank"><img src="images/gradle_1000.png"></a>
+    <div class="left">
+    <ul>
+        <li>DSL puissant</li>
+        <li>déclaratif</li>
+        <li>impératif au besoin</li>
+        <li>contrôle fin du cycle de vie, des tâches, ...</li>
+    </ul>
+    </div>
+    <div class="right">
+        <ul>
+            <li>Communauté grandissante</li>
+            <li>Open Source</li>
+            <li>Documentation exhaustive</li>
+            <li>Ne demande qu'à être adopté !</li>
+        </ul>
+    </div>
+</section>
+
+<section class="slide">
+    <h2>Questions</h2>
+    <img src="images/questions.png">
+</section>
+
+<!-- End slides. -->
+
+
+<!-- Begin extension snippets. Add or remove as needed. -->
+
+<!-- deck.navigation snippet -->
+<a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+<a href="#" class="deck-next-link" title="Next">&#8594;</a>
+
+<!-- deck.status snippet -->
+<p class="deck-status">
+	<span class="deck-status-current"></span>
+	/
+	<span class="deck-status-total"></span>
+</p>
+
+<!-- deck.goto snippet -->
+<form action="." method="get" class="goto-form">
+	<label for="goto-slide">Go to slide:</label>
+	<input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+	<datalist id="goto-datalist"></datalist>
+	<input type="submit" value="Go">
+</form>
+
+<!-- deck.hash snippet -->
+<a href="." title="Permalink to this slide" class="deck-permalink">#</a>
+
+<!-- End extension snippets. -->
+
+
+<!-- Required JS files. -->
+<script src="jquery-1.7.2.min.js"></script>
+<script src="core/deck.core.js"></script>
+<script src="extensions/codemirror/codemirror.js"></script>
+
+<!-- Extension JS files. Add or remove as needed. -->
+<script src="core/deck.core.js"></script>
+<script src="extensions/goto/deck.goto.js"></script>
+<script src="extensions/hash/deck.hash.js"></script>
+<script src="extensions/status/deck.status.js"></script>
+<script src="extensions/navigation/deck.navigation.js"></script>
+<script src="extensions/scale/deck.scale.js"></script>
+<script src="extensions/codemirror/deck.codemirror.js"></script>
+<script src="extensions/codemirror/mode/javascript/javascript.js"></script>
+<script src="extensions/codemirror/mode/groovy/groovy.js"></script>
+
+<!-- Initialize the deck. You can put this in an external file if desired. -->
+<script>
+	$(function() {
+        $.deck('.slide');
+        var opts = $.deck('getOptions');
+        opts.codemirror.theme = 'neat';
+	});
+    $.extend(true, $.deck.defaults, {
+        selectors: {
+            statusCurrent: '.deck-status-current',
+            statusTotal: '.deck-status-total'
+        },
+
+        countNested: true
+    });
+
+</script>
+</body>
+</html>

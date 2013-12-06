@@ -1,0 +1,5 @@
+tasks.withType(Jar).all {
+    doLast {
+        ant.checksum(file: archivePath, toDir: archivePath.parentFile)
+    }
+}

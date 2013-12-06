@@ -1,0 +1,4 @@
+
+task greeter << {
+    println "Hello from $project.name"
+}

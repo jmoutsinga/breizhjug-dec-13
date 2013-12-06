@@ -1,0 +1,4 @@
+task chuck(type: ChuckNorrisTask) {
+    firstName = 'Cedric'
+    lastName = 'Champeau'
+}
