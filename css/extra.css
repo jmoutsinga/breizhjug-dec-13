@@ -1,0 +1,104 @@
+@charset "UTF-8";
+
+.slide .front-slide {
+    background-position: top center;
+    background-repeat: no-repeat;
+    text-align: center;
+}
+
+.front-slide .title {
+    font-size: 35pt;
+    font-weight: bolder;
+}
+
+.front-slide .subtitle {
+    font-size: 25pt;
+}
+
+.front-slide .subtitle2 {
+    font-size: 20pt;
+}
+
+.left {
+    float: left;
+    width: 50%;
+    height: 100%;
+}
+
+.right {
+    float: right;
+    width: 50%;
+    height: 100%;
+}
+
+.valign {
+    display:inline-block;
+    height:100%;
+    vertical-align: middle;
+}
+
+/* CITATIONS */
+.deck-container .slide blockquote {
+    font-family: "Hoefler Text", Constantia, Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-size: 2em;
+    padding: 1em 2em .5em 2em;
+    color: #000;
+    background: #fff;
+    position: relative;
+    border: 1px solid #cde;
+    z-index: auto;
+}
+
+.borderradius .deck-container .slide blockquote {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.boxshadow .deck-container .slide blockquote > :first-child:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    background: #fff;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.boxshadow .deck-container .slide blockquote:after {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    top: 10px;
+    bottom: 10px;
+    left: 0;
+    right: 50%;
+    -moz-border-radius: 10px/100px;
+    border-radius: 10px/100px;
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+}
+
+.deck-container .slide blockquote p {
+    margin: 0;
+}
+
+.deck-container .slide blockquote cite {
+    font-size: .5em;
+    font-style: normal;
+    font-weight: bold;
+    color: #888;
+}
+
+.deck-container .slide blockquote:before {
+    content: "\201c";
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 5em;
+    line-height: 1;
+    color: #ccf0f0;
+    z-index: 1;
+}
